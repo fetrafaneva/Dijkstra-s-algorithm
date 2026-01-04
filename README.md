@@ -1,4 +1,4 @@
-Algorithme de Dijkstra - Visualisation Interactive
+### Algorithme de Dijkstra - Visualisation Interactive
 
 Ce projet est une visualisation interactive de l’algorithme de Dijkstra réalisée en HTML, CSS et JavaScript. Il permet de calculer et d’afficher le chemin le plus court entre deux nœuds d’un graphe pondéré, avec une interface graphique conviviale.
 
