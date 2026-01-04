@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithme de Dijkstra</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .graph-container { 
+            position: relative; 
+            width: 500px; 
+            height: 400px; 
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .node { 
+            position: absolute; 
+            width: 30px; 
+            height: 30px; 
+            background: #ffeb3b; 
+            border-radius: 50%; 
+            text-align: center; 
+            line-height: 30px; 
+            font-weight: bold; 
+            border: 2px solid #333;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .input-weight { 
+            position: absolute; 
+            width: 30px; 
+            background: white; 
+            border: 1px solid #3498db; 
+            text-align: center; 
+            font-size: 10px; 
+            border-radius: 3px;
+            z-index: 5;
+        }
+        svg { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 0; 
+        }
+        line { 
+            stroke: #7f8c8d; 
+            stroke-width: 2; 
+        }
+        table { 
+            border-collapse: collapse; 
+            margin: 20px auto; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th, td { 
+            border: 1px solid #95a5a6; 
+            padding: 10px; 
+            text-align: center; 
+            min-width: 50px;
+        }
+        th { 
+            background-color: #3498db; 
+            color: white;
+            font-weight: bold;
+        }
+        .processed-node { 
+            background-color: #fff3a3; 
+            font-weight: bold;
+        }
+        .updated-value {
+            background-color: #d5f5e3;
+        }
+        .start-node {
+            background-color: #a6d4ff;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        .path-list {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .controls {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Algorithme de Dijkstra</h2>
+    
+    <div class="controls">
+        <button onclick="calculateShortestPath()">Calculer le chemin le plus court</button>
+    </div>
+    
+    <div class="graph-container">
+        <svg>
+            <line x1="65" y1="165" x2="165" y2="65"/>
+            <line x1="65" y1="165" x2="250" y2="165"/>
+            <line x1="65" y1="165" x2="165" y2="265"/>
+            <line x1="165" y1="65" x2="250" y2="165"/>
+            <line x1="250" y1="165" x2="165" y2="265"/>
+            <line x1="165" y1="65" x2="315" y2="65"/>
+            <line x1="250" y1="165" x2="315" y2="65"/>
+            <line x1="250" y1="165" x2="315" y2="265"/>
+            <line x1="165" y1="265" x2="315" y2="265"/>
+            <line x1="315" y1="65" x2="415" y2="165"/>
+            <line x1="315" y1="265" x2="415" y2="165"/>
+            <line x1="315" y1="265" x2="315" y2="65"/>
+            <line x1="165" y1="65" x2="165" y2="265"/>
+            <line x1="250" y1="165" x2="315" y2="165"/>
+        </svg>
+
+        <div class="node" style="top: 150px; left: 50px;">A</div>
+        <div class="node" style="top: 50px; left: 150px;">B</div>
+        <div class="node" style="top: 150px; left: 235px;">C</div>
+        <div class="node" style="top: 250px; left: 150px;">D</div>
+        <div class="node" style="top: 50px; left: 300px;">E</div>
+        <div class="node" style="top: 250px; left: 300px;">F</div>
+        <div class="node" style="top: 150px; left: 400px;">G</div>
+
+        <input class="input-weight" id="AB" style="top:110px; left:90px;" type="number" value="1">
+        <input class="input-weight" id="AC" style="top:155px; left:110px;" type="number" value="1">
+        <input class="input-weight" id="AD" style="top:210px; left:90px;" type="number" value="1">
+        <input class="input-weight" id="BC" style="top:110px; left:195px;" type="number" value="1">
+        <input class="input-weight" id="CD" style="top:210px; left:195px;" type="number" value="1">
+        <input class="input-weight" id="BE" style="top:55px; left:228px;" type="number" value="1">
+        <input class="input-weight" id="CE" style="top:110px; left:265px;" type="number" value="1">
+        <input class="input-weight" id="CF" style="top:210px; left:265px;" type="number" value="1">
+        <input class="input-weight" id="DF" style="top:258px; left:225px;" type="number" value="1">
+        <input class="input-weight" id="EG" style="top:110px; left:350px;" type="number" value="1">
+        <input class="input-weight" id="FG" style="top:210px; left:350px;" type="number" value="1">
+        <input class="input-weight" id="BD" style="top:185px; left:145px;" type="number" value="1">
+        <input class="input-weight" id="DE" style="top:165px; left:280px;" type="number" value="1">
+        <input class="input-weight" id="EF" style="top:140px; left:298px;" type="number" value="1">
+    </div>
+
+    <p id="result"></p>
+    <div id="steps-table"></div>
+
+    <script>
+        const edges = ["AB","AC","AD","BC","CD","BE","CE","CF","DF","EG","FG","BD","DE","EF"];
+
+        function dijkstra(start, end) {
+    document.getElementById("steps-table").innerHTML = "";
+
+    const graph = {};
+    const weightsList = [];
+    const nodes = ["A", "B", "C", "D", "E", "F", "G"];
+    const steps = [];
+
+    edges.forEach(edge => {
+        const weight = parseInt(document.getElementById(edge).value) || 1;
+        const [a, b] = edge.split("");
+        if (!graph[a]) graph[a] = {};
+        if (!graph[b]) graph[b] = {};
+        graph[a][b] = weight;
+        graph[b][a] = weight;
+        weightsList.push(`${edge} = ${weight}`);
+    });
+
+    const distances = {};
+    const predecessors = {};
+    const visited = new Set();
+    const allPredecessors = {};
+
+    nodes.forEach(node => {
+        distances[node] = Infinity;
+        predecessors[node] = null;
+        allPredecessors[node] = [];
+    });
+    distances[start] = 0;
+
+    steps.push({
+        processedNode: null,
+        distances: { ...distances },
+        predecessors: { ...predecessors }
+    });
+
+    while (visited.size < nodes.length) {
+        let closestNode = null;
+        for (let node of nodes) {
+            if (!visited.has(node) && (closestNode === null || distances[node] < distances[closestNode])) {
+                closestNode = node;
+            }
+        }
+
+        if (!closestNode || distances[closestNode] === Infinity) break;
+        visited.add(closestNode);
+
+        for (let neighbor in graph[closestNode]) {
+            if (visited.has(neighbor)) continue;
+
+            const newDist = distances[closestNode] + graph[closestNode][neighbor];
+            if (newDist < distances[neighbor]) {
+                distances[neighbor] = newDist;
+                predecessors[neighbor] = closestNode;
+                allPredecessors[neighbor] = [closestNode];
+            } else if (newDist === distances[neighbor]) {
+                allPredecessors[neighbor].push(closestNode);
+            }
+        }
+
+        steps.push({
+            processedNode: closestNode,
+            distances: { ...distances },
+            predecessors: { ...predecessors }
+        });
+    }
+
+    // ▶ Reconstruire tous les chemins les plus courts
+    function getAllPaths(to, path = []) {
+        if (to === start) return [[start, ...path]];
+        const paths = [];
+        for (const prev of allPredecessors[to]) {
+            paths.push(...getAllPaths(prev, [to, ...path]));
+        }
+        return paths;
+    }
+
+    const allPaths = (distances[end] < Infinity && allPredecessors[end].length > 0)
+        ? getAllPaths(end)
+        : [];
+
+    const displayedPath = [];
+    let current = end;
+    while (current !== null) {
+        displayedPath.unshift(current);
+        current = predecessors[current];
+    }
+
+    let resultHtml = `<strong>Valeurs saisies :</strong> ${weightsList.join(", ")}<br>`;
+    if (allPaths.length > 0) {
+        resultHtml += `<strong>Chemins les plus courts (${distances[end]} unités) :</strong><br>`;
+        allPaths.forEach(path => {
+            resultHtml += `${path.join(" → ")}<br>`;
+        });
+    } else {
+        resultHtml += "<strong>Aucun chemin trouvé</strong>";
+    }
+    document.getElementById("result").innerHTML = resultHtml;
+
+    // ▶ Génération du tableau
+let finalized = new Set();
+let finalizedStep = {};  // pour savoir quand chaque nœud est traité
+
+steps.forEach((step, index) => {
+    if (index > 0 && step.processedNode) {
+        finalized.add(step.processedNode);
+        finalizedStep[step.processedNode] = index;
+    }
+});
+
+let tableHtml = `<h3>Tableau des étapes</h3><table><tr><th>Étape</th>`;
+nodes.forEach(node => tableHtml += `<th>${node}</th>`);
+tableHtml += "</tr>";
+
+steps.forEach((step, index) => {
+    tableHtml += "<tr>";
+    tableHtml += `<td>${index === 0 ? "Initialisation" : step.processedNode}</td>`;
+
+    nodes.forEach(node => {
+        const dist = step.distances[node];
+        const pred = step.predecessors[node];
+        const isFinalized = finalized.has(node) && finalizedStep[node] < index;
+
+        if (isFinalized) {
+            tableHtml += `<td></td>`; // cellule vide pour les nœuds déjà finalisés
+        } else {
+            let display = dist === Infinity ? "∞" : dist.toString();
+            if (dist !== Infinity && pred !== null) display += pred;
+
+            const cellClasses = [];
+            if (index === 0 && node === start) cellClasses.push("start-node");
+            if (step.processedNode === node) cellClasses.push("processed-node");
+            if (
+                index > 0 &&
+                (step.distances[node] !== steps[index - 1].distances[node] ||
+                 step.predecessors[node] !== steps[index - 1].predecessors[node])
+            ) {
+                cellClasses.push("updated-value");
+            }
+
+            tableHtml += `<td class="${cellClasses.join(" ")}">${display}</td>`;
+        }
+    });
+
+    tableHtml += "</tr>";
+});
+
+tableHtml += "</table>";
+document.getElementById("steps-table").innerHTML = tableHtml;
+
+}
+
+
+        function calculateShortestPath() {
+            let start = prompt("Entrer le nœud de départ (ex: A):").toUpperCase();
+            let end = prompt("Entrer le nœud d'arrivée (ex: G):").toUpperCase();
+            
+            if (start && end && start.length === 1 && end.length === 1) {
+                dijkstra(start, end);
+            } else {
+                alert("Veuillez entrer des nœuds valides (A à G)");
+            }
+        }
+    </script>
+</body>
+</html>
