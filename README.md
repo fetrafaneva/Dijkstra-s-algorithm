@@ -2,7 +2,7 @@
 
 Ce projet est une visualisation interactive de l’algorithme de Dijkstra réalisée en HTML, CSS et JavaScript. Il permet de calculer et d’afficher le chemin le plus court entre deux nœuds d’un graphe pondéré, avec une interface graphique conviviale.
 
-📌 Fonctionnalités
+### 📌 Fonctionnalités
 
 Saisie dynamique des poids des arêtes.
 
@@ -22,7 +22,7 @@ Prédécesseurs
 
 Mise en évidence des changements à chaque étape
 
-🖥️ Aperçu
+### 🖥️ Aperçu
 
 Graphe interactif avec nœuds (A à G) et lignes représentant les arêtes.
 
@@ -32,7 +32,7 @@ Résultat affiché avec chemin le plus court et distances.
 
 Tableau étape par étape montrant l’évolution de l’algorithme.
 
-⚡ Comment utiliser
+### ⚡ Comment utiliser
 
 Ouvrir le fichier index.html dans un navigateur web moderne.
 
@@ -44,7 +44,7 @@ Visualiser le chemin le plus court et les étapes dans le tableau généré.
 
 Modifier les poids des arêtes si nécessaire et recalculer.
 
-🔧 Technologies utilisées
+### 🔧 Technologies utilisées
 
 HTML5 : Structure de la page
 
@@ -54,7 +54,7 @@ JavaScript : Algorithme de Dijkstra et interactions
 
 SVG : Dessin des lignes/arêtes entre les nœuds
 
-🧠 Algorithme implémenté
+### 🧠 Algorithme implémenté
 
 L’algorithme suit la logique classique de Dijkstra :
 
